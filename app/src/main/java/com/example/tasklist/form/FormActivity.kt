@@ -20,8 +20,13 @@ class FormActivity : AppCompatActivity() {
         val editDescription = findViewById<EditText>(R.id.editDescription)
         val button = findViewById<ImageButton>(R.id.sendButton)
 
+        val taskedit = intent.getSerializableExtra("task") as? Task
+        editDescription.setText(taskedit?.description)
+        editTitle.setText(taskedit?.title)
+
         button.setOnClickListener(){
-            val newTask = Task(id = UUID.randomUUID().toString(), title = editTitle.text.toString(), description = editDescription.text.toString() )
+            val newTask = Task(
+                id = taskedit?.id?: UUID.randomUUID().toString(), title = editTitle.text.toString(), description = editDescription.text.toString() )
             intent.putExtra("task", newTask)
             // Instanciation d'un nouvel objet [Task]
             setResult(RESULT_OK, intent)

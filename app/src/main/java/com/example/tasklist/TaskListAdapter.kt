@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
     var currentList: List<Task> = emptyList()
+    var onClickEdit: (Task) -> Unit = {}
     var onClickDelete: (Task) -> Unit = {}
 
     // on utilise `inner` ici afin d'avoir accès aux propriétés de l'adapter directement
@@ -23,6 +24,9 @@ class TaskListAdapter : RecyclerView.Adapter<TaskListAdapter.TaskViewHolder>() {
 
             val deleteButton = itemView.findViewById<ImageButton>(R.id.deleteButton)
             deleteButton.setOnClickListener{ onClickDelete(task) }
+
+            val editButton = itemView.findViewById<ImageButton>(R.id.editButton)
+            editButton.setOnClickListener{ onClickEdit(task) }
         }
     }
 

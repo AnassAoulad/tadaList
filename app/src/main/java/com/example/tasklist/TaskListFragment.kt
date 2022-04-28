@@ -29,6 +29,13 @@ class TaskListFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+    val editTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        val task = result.data?.getSerializableExtra("task") as Task? ?:return@registerForActivityResult
+        taskList = taskList.map { if (it.id == task.id) task else it }
+        adapter.currentList = taskList
+        adapter.notifyDataSetChanged()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,6 +67,12 @@ class TaskListFragment : Fragment() {
         adapter.onClickDelete = { task-> taskList = taskList - task
             refreshAdapter()}
 
+        adapter.onClickEdit = { task->
+            val intent = Intent(context, FormActivity::class.java)
+            intent.putExtra("task", task)
+            editTask.launch(intent)
+
+        }
     }
     private fun refreshAdapter() {
         adapter.currentList = taskList
