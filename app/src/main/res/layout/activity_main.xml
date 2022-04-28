@@ -7,27 +7,11 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/Title"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainer"
+        android:name="com.example.tasklist.TaskListFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tell me what you want"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:layout_height="match_parent"
         />
-
-    <TextView
-        android:id="@+id/Name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Spice Girls"
-        android:textAlignment="center"
-        android:textSize="20sp" />
-
-    <ImageView
-        android:id="@+id/start"
-        android:layout_width="match_parent"
-        android:layout_height="87dp"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
 
 </LinearLayout>
