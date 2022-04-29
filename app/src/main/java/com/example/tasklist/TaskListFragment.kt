@@ -83,14 +83,14 @@ class TaskListFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launch{
-
+        lifecycleScope.launch {
             val userInfo = Api.userWebService.getInfo().body()!!
-            val userInfoTextView = view?.findViewById<TextView>(R.id.nameView)
+            val userInfoTextView= view?.findViewById<TextView>(R.id.username)
             userInfoTextView?.text = "${userInfo.firstName} ${userInfo.lastName}"
-
         }
     }
+
 }
