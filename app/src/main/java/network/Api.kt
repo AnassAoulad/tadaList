@@ -1,5 +1,7 @@
 package network
 
+import android.widget.TextView
+import com.example.tasklist.R
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -10,7 +12,11 @@ import retrofit2.Retrofit
 object Api {
     private const val TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo3MjgsImV4cCI6MTY4MjcxMTUwM30.e9XfoQ2Ajl6XSR0Hr0IDdOUPr86qhjrw7Xa2Smvibdg"
 
-    private val retrofit by lazy<Any>{
+    val userWebService : UserWebService by lazy {
+        retrofit.create(UserWebService::class.java)
+    }
+
+    private val retrofit by lazy{
         // client HTTP
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
@@ -35,8 +41,6 @@ object Api {
             .client(okHttpClient)
             .addConverterFactory(jsonSerializer.asConverterFactory("application/json".toMediaType()))
             .build()
-        val userWebService : UserWebService by lazy<Any> {
-            retrofit.create(UserWebService::class.java)
-        }
     }
+
 }

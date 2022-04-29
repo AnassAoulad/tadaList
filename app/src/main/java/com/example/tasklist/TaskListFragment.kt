@@ -7,10 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tasklist.form.FormActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
+import network.Api
 import java.util.*
 
 class TaskListFragment : Fragment() {
@@ -77,5 +81,16 @@ class TaskListFragment : Fragment() {
     private fun refreshAdapter() {
         adapter.currentList = taskList
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch{
+
+            val userInfo = Api.userWebService.getInfo().body()!!
+            val userInfoTextView = view?.findViewById<TextView>(R.id.nameView)
+            userInfoTextView?.text = "${userInfo.firstName} ${userInfo.lastName}"
+
+        }
     }
 }
