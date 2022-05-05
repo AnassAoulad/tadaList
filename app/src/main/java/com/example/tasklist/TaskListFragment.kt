@@ -1,12 +1,12 @@
 package com.example.tasklist
 
+import network.TasksListViewModel
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +24,10 @@ class TaskListFragment : Fragment() {
         Task(id = "id_2", title = "Task 2"),
         Task(id = "id_3", title = "Task 3")
     )
+
     private val adapter = TaskListAdapter()
+
+    private val viewModel: TasksListViewModel by viewModel()
 
     val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task? ?:return@registerForActivityResult
@@ -38,6 +41,22 @@ class TaskListFragment : Fragment() {
         taskList = taskList.map { if (it.id == task.id) task else it }
         adapter.currentList = taskList
         adapter.notifyDataSetChanged()
+    }
+
+    private fun refreshAdapter() {
+        adapter.currentList = taskList
+        adapter.notifyDataSetChanged()
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            val userInfo = Api.userWebService.getInfo().body()!!
+            val userInfoTextView= view?.findViewById<TextView>(R.id.username)
+            userInfoTextView?.text = "${userInfo.firstName} ${userInfo.lastName}"
+        }
+        viewModel.refresh() //
     }
 
     override fun onCreateView(
@@ -77,20 +96,11 @@ class TaskListFragment : Fragment() {
             editTask.launch(intent)
 
         }
-    }
-    private fun refreshAdapter() {
-        adapter.currentList = taskList
-        adapter.notifyDataSetChanged()
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        lifecycleScope.launch {
-            val userInfo = Api.userWebService.getInfo().body()!!
-            val userInfoTextView= view?.findViewById<TextView>(R.id.username)
-            userInfoTextView?.text = "${userInfo.firstName} ${userInfo.lastName}"
+        lifecycleScope.launch { // on lance une coroutine car `collect` est `suspend`
+            viewModel.tasksStateFlow.collect { newList -> adapter.currentList = newList
+            }
         }
+
     }
 
 }
