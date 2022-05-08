@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.tasklist.form.FormActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
@@ -21,13 +23,13 @@ class TaskListFragment : Fragment() {
 
     private var taskList = listOf(
         Task(id = "id_1", title = "Task 1", description = "description 1"),
-        Task(id = "id_2", title = "Task 2"),
-        Task(id = "id_3", title = "Task 3")
+        Task(id = "id_2", title = "Task 2", description = ""),
+        Task(id = "id_3", title = "Task 3", description = "")
     )
 
     private val adapter = TaskListAdapter()
 
-    private val viewModel: TasksListViewModel by viewModel()
+    private val viewModel: TasksListViewModel by viewModels()
 
     val createTask = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = result.data?.getSerializableExtra("task") as Task? ?:return@registerForActivityResult
@@ -48,13 +50,15 @@ class TaskListFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
-
     override fun onResume() {
         super.onResume()
         lifecycleScope.launch {
             val userInfo = Api.userWebService.getInfo().body()!!
             val userInfoTextView= view?.findViewById<TextView>(R.id.username)
             userInfoTextView?.text = "${userInfo.firstName} ${userInfo.lastName}"
+            val imageView =  view?.findViewById<ImageView>(R.id.imageView)
+            imageView?.load("https://goo.gl/gEgYUd") {}
+
         }
         viewModel.refresh() //
     }
